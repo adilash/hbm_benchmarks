@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Specify the C program executable
+g++ hbm_thread_new.cpp -lnuma -O3 -o hbmt
+executable="./hbmt"
+
+# List of arguments for the C program
+no_of_cores=(
+    1 2 3 4 6 8
+    # Add more arguments as needed
+)
+memory_node=(
+    2 3
+    # Add more arguments as needed
+)
+
+# Output file
+output_file="output.txt"
+
+# Iterate through the arguments and execute the C program
+for i in "${memory_node[@]}"; do
+    for j in {0..7}; do
+        echo "Memory in $i, accessed from $j: $arg" >> "$output_file"
+        for k in "${no_of_cores[@]}"; do
+            echo "$k cores: " >> "$output_file"
+            $executable "$i" "$j" "$k" >> "$output_file"
+            echo "----------------------------------------" >> "$output_file"
+        done
+        echo "============================================" >> "$output_file"
+    done
+done
+
+echo "Execution complete. Output written to $output_file"
